@@ -1,12 +1,32 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { createStore } from 'redux';
+import { applyMiddleware, createStore } from 'redux';
 import App from './App';
 import "./index.css";
-import movies from "./reducers/index";
+import rootReducer from "./reducers/index";
+
+
+// Middleware-1
+// obj = {dispatch,getState}
+// function logger(obj,next,action)
+// logger(obj)(next)(action) // currying
+const logger = function({dispatch,getState}){
+  return function(next){
+    return function(action){
+      // middleWare code
+      console.log("ACTION TYPE = ", action.type);
+      next(action);
+    }
+  }
+}
+// Middleware-2
+const logger1 = ({dispatch,getState}) => (next) => (action) => {
+  console.log("action type = ", action.type);
+  next(action);
+}
 
 // create store and pasing the reducers
-const store = createStore(movies);
+const store = createStore(rootReducer,applyMiddleware(logger,logger1));
 console.log("store ", store);
 // internally called reducer movies(undefined,{});
 console.log("before state ", store.getState());
