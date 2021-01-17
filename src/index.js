@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { createContext } from 'react';
 import ReactDOM from 'react-dom';
 import { applyMiddleware, createStore } from 'redux';
 import thunk from "redux-thunk";
@@ -58,10 +58,30 @@ console.log("before state ", store.getState());
 
 // console.log("after state ", store.getState());
 
+export const StoreContext = createContext();
+
+class Provider extends React.Component {
+  render(){
+    const {store} = this.props;
+    return <StoreContext.Provider value={store}>
+      {this.props.children}
+    </StoreContext.Provider>
+  }
+}
 
 ReactDOM.render(
   <React.StrictMode>
-    <App store={store} />
+    {/* <StoreContext.Provider value={store}>
+      <App store={store} />
+    </StoreContext.Provider> */}
+
+    {/* if value of store changes than components which is using store 
+    automatically reRendered */}
+    <Provider store={store}>
+      {/* <App store={store} /> */}
+      <App />
+    </Provider>
+    
   </React.StrictMode>,
   document.getElementById('root')
 );

@@ -3,6 +3,7 @@ import { data } from "../data";
 import Navbar from "./Navbar";
 import MovieCard from "./MovieCard";
 import { addMovies, showFavourite } from "../actions/index";
+import { StoreContext } from "../index";
 
 class App extends React.Component{
 
@@ -46,9 +47,21 @@ class App extends React.Component{
     const {movies,search} = this.props.store.getState();
     const {moviesList,favouriteList, showFav} = movies;
     const displayMovies = showFav? favouriteList:moviesList;
+    console.log("App");
+    // return (
+    //   c
+    //       {(store)=>{
+    //           // return code
+    //           // but in this above functions are not able to use store via this method
+    //           // so make AppWrapper
+    //       }}
+    //   </StoreContext.Consumer>
+    // )
+
     return (
       <div className="App">
-        <Navbar search={search} dispatch={this.props.store.dispatch}/>
+        {/* <Navbar search={search} dispatch={this.props.store.dispatch}/> */}
+        <Navbar search={search}/>
         <div className="main">
           <div className="tabs">
             <div className={`tab ${showFav?"":"active-tabs"}  `} onClick={()=>this.onChangeTab(false)}>Movies</div>
@@ -74,4 +87,17 @@ class App extends React.Component{
   }
 }
 
-export default App;
+class AppWrapper extends React.Component{
+  render() {
+    return (
+      <StoreContext.Consumer>
+        {(store)=> (<App store={store} />)}
+      </StoreContext.Consumer>
+    );
+  }
+}
+
+
+
+// export default App;
+export default AppWrapper;
