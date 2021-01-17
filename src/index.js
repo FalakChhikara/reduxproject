@@ -1,7 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { applyMiddleware, createStore } from 'redux';
-import App from './App';
+import thunk from "redux-thunk";
+
+import App from './component/App';
 import "./index.css";
 import rootReducer from "./reducers/index";
 
@@ -14,19 +16,30 @@ const logger = function({dispatch,getState}){
   return function(next){
     return function(action){
       // middleWare code
-      console.log("ACTION TYPE = ", action.type);
+      if(typeof action !== "function"){
+        console.log("ACTION TYPE = ", action.type);
+      }
       next(action);
     }
   }
 }
 // Middleware-2
-const logger1 = ({dispatch,getState}) => (next) => (action) => {
-  console.log("action type = ", action.type);
-  next(action);
-}
+// const logger1 = ({dispatch,getState}) => (next) => (action) => {
+//   console.log("action type = ", action.type);
+//   next(action);
+// }
+
+// Middleware thunk
+// const thunk = ({dispatch,getState}) => (next) => (action) => {
+//   if(typeof action === "function"){
+//     action(dispatch);
+//     return;
+//   }
+//   return next(action);
+// }
 
 // create store and pasing the reducers
-const store = createStore(rootReducer,applyMiddleware(logger,logger1));
+const store = createStore(rootReducer,applyMiddleware(logger,thunk));
 console.log("store ", store);
 // internally called reducer movies(undefined,{});
 console.log("before state ", store.getState());

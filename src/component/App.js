@@ -1,8 +1,8 @@
 import React from 'react';
-import { data } from "./data";
+import { data } from "../data";
 import Navbar from "./Navbar";
 import MovieCard from "./MovieCard";
-import { addMovies, showFavourite } from "./actions/index";
+import { addMovies, showFavourite } from "../actions/index";
 
 class App extends React.Component{
 
@@ -43,12 +43,12 @@ class App extends React.Component{
   }
 
   render(){
-    const {movies} = this.props.store.getState();
+    const {movies,search} = this.props.store.getState();
     const {moviesList,favouriteList, showFav} = movies;
     const displayMovies = showFav? favouriteList:moviesList;
     return (
       <div className="App">
-        <Navbar />
+        <Navbar search={search} dispatch={this.props.store.dispatch}/>
         <div className="main">
           <div className="tabs">
             <div className={`tab ${showFav?"":"active-tabs"}  `} onClick={()=>this.onChangeTab(false)}>Movies</div>
