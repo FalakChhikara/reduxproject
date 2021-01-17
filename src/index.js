@@ -69,6 +69,52 @@ class Provider extends React.Component {
   }
 }
 
+// const connectedAppComponent = connect(callback)(App);
+export function connect(callback) {
+  return function(Component) {
+    class ConnectedComponent extends React.Component{
+      constructor(props){
+        super(props);
+        this.unSubscribe = this.props.store.subscribe(()=>{
+          console.log("Updated Component");
+          console.log(this.props.store.getState());
+          this.forceUpdate();
+        });
+      }
+      componentWillUnmount = ()=>{
+        this.unSubscribe();
+      }
+      // render(){
+      //   return <StoreContext.Consumer>
+      //     {(store)=>{
+      //         const state = store.getState();
+      //         const PROPS = callback(state);
+      //         <Component dispatch={store.dispatch} {...PROPS}/>
+      //       }}
+      //   </StoreContext.Consumer>
+      // }
+      render(){
+        const state = this.props.store.getState();
+        const PROPS = callback(state);
+        return (
+          <Component dispatch={this.props.store.dispatch} {...PROPS}/>
+        )
+      }
+    }
+    class ConnectedComponentWrapper extends React.Component{
+      render(){
+        return <StoreContext.Consumer>
+          {(store)=><ConnectedComponent store={store}/>}
+        </StoreContext.Consumer>
+      }
+    }
+    return ConnectedComponentWrapper;
+
+
+  }
+  
+}
+
 ReactDOM.render(
   <React.StrictMode>
     {/* <StoreContext.Provider value={store}>
